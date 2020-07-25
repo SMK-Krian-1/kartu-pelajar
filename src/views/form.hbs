@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/ff29c293e6.js" crossorigin="anonymous"></script>
+  <title>Form Isi Data</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Data Diri</h1>
+    <div class="card">
+      <div class="card-body">
+          <h1>/form/{{ jurusan }}/add</h1>
+        <form action="/form/{{ jurusan }}/add" method="post">
+          <div class="form-row">
+            <div class="col-12">
+              <label>Nama Lengkap</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-user"></i></div>
+                </div>
+                <input type="text" class="form-control" placeholder="Nama Lengkap" name="namaLengkap"  />
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" name="fileFoto">
+                  <label class="custom-file-label" for="fileFoto">Pilih Foto</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mt-3">
+              <label>NIS - NISN</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-id-card"></i></div>
+                </div>
+                <input type="number" class="form-control" name="NIS" placeholder="Contoh: 110401"  />
+                <div class="input-group-prepend">
+                  <div class="input-group-text">/</div>
+                </div>
+                <input type="text" class="form-control" name="NIS2" placeholder="Contoh: 1104.201" />
+                <div class="input-group-prepend">
+                  <div class="input-group-text">-</div>
+                </div>
+                <input type="number" class="form-control" name="NISN" placeholder="Contoh: 0014553961"  />
+              </div>
+            </div>
+            <div class="col-12 mt-3">
+              <label>Kompetensi Keahlian</label>
+              <select class="form-control" name="komp_keahlian">
+                <option value="Teknik Pemesinan">Teknik Pemesinan</option>
+                <option value="Rekayasa Perangkat Lunak">Rekayasa Perangkat Lunak</option>
+                <option value="Teknik Pengelasan">Teknik Pengelasan</option>
+                <option value="Teknik Instalasi Tenaga Listrik">Teknik Instalasi Tenaga Listrik</option>
+              </select>
+            </div>
+            <div class="col-6 mt-3">
+              <label>Tempat Lahir</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-map-marker-alt"></i></div>
+                </div>
+                <input type="text" class="form-control" name="tempatLahir" placeholder="Tempat"  />
+              </div>
+            </div>
+            <div class="col-6 mt-3">
+              <label>Tanggal Lahir</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><i class="fa fa-calendar-day"></i></div>
+                </div>
+                <input type="number" class="form-control" name="tglLahir" placeholder="Tanggal" min="1" max="31"
+                   />
+                <select class="form-control" name="blnLahir">
+                  <option value="Januari">Januari</option>
+                  <option value="Februari">Februari</option>
+                  <option value="Maret">Maret</option>
+                  <option value="April">April</option>
+                  <option value="Mei">Mei</option>
+                  <option value="Juni">Juni</option>
+                  <option value="Juli">Juli</option>
+                  <option value="Agustus">Agustus</option>
+                  <option value="September">September</option>
+                  <option value="Oktober">Oktober</option>
+                  <option value="November">November</option>
+                  <option value="Desember">Desember</option>
+                </select>
+                <input type="number" class="form-control" name="thnLahir" placeholder="Tahun"  />
+              </div>
+            </div>
+            <div class="col-12 mt-3">
+              <label>Alamat</label>
+              <div class="form-group">
+                <textarea class="form-control" rows="3" name="alamat"
+                  placeholder="Contoh: Desa Gamping RT 01 RW 01 Krian Sidoarjo" ></textarea>
+              </div>
+            </div>
+            <div class="col-12 text-right">
+              <input class="btn btn-outline-secondary" type="reset" />
+              <input class="btn btn-secondary" type="submit" />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
