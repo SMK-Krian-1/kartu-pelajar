@@ -59,7 +59,6 @@ app.get("/form/:jurusan", (req, res) => {
 app.post("/form/:jurusan/add", (req, res) => {
   const { jurusan } = req.params;
   const { namaLengkap, NIS, NIS2, NISN, komp_keahlian, tempatLahir, tglLahir, blnLahir, thnLahir, alamat } = req.body;
-  console.log(req.body)
   const ttl = `${tempatLahir}, ${tglLahir} ${blnLahir} ${thnLahir}`;
   db.query(`INSERT INTO siswa(kelas, nama, nis, absen, nisn, komp_keahlian, ttl, alamat) VALUES('${jurusan}', '${namaLengkap}', '${NIS}', '${NIS2}', '${NISN}', '${komp_keahlian}', '${ttl}', '${alamat}')`, (err, result, field) => {
     if (err) throw err;
@@ -68,9 +67,13 @@ app.post("/form/:jurusan/add", (req, res) => {
   });
 });
 
-app.post("/:jurusan/get/:id", (req, res) => {
-  const { jurusan } = req.params;
-  
+app.get("/:jurusan/get/:nisn", (req, res) => {
+  const { jurusan, nisn } = req.params;
+  db.query(`SELECT * FROM siswa WHERE kelas='${jurusan}' AND nisn='${nisn}'`, (err, result) => {
+    if (err) res.json("Something went wrong!");
+    if (!result.length) return res.status(404).json("Not Found!");
+    res.json(result);
+  });
 });
 
 app.post("form/:jurusan/upd/:id", (req, res) => {
