@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+    <script src="https://kit.fontawesome.com/ff29c293e6.js" crossorigin="anonymous"></script>
+    <title>Data {{ kelas }}</title>
+</head>
+
+<body>
+    <div class="container">
+        <table class="table table-striped" id="dtable">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nama</th>
+                    <th>NIS</th>
+                    <th>NISN</th>
+                    <th>Absen</th>
+                    <th>TTL</th>
+                    <th>Alamat</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each result}}
+                    <tr>
+                        <td>{{this.nama}}</td>
+                        <td>{{this.nis}}</td>
+                        <td>{{this.nisn}}</td>
+                        <td>{{this.absen}}</td>
+                        <td>{{this.ttl}}</td>
+                        <td>{{this.alamat}}</td>
+                        <td class="text-center"><a href="/get-data-siswa/{{this.nisn}}" target="_blank" class="btn btn-sm btn-dark">Go</a></td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#dtable").DataTable();
+        });
+        function generateKartu(nisn) {
+            $.ajax({
+                url: "/generate-kartu",
+                method: "POST",
+                data: {
+                    nisn
+                },
+                success: function(result) {
+                    console.log(result)
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
