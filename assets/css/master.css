@@ -1,0 +1,23 @@
+.header {
+  background: #adcbe3;
+  height: 60vh;
+  width: 100vw;
+  position: absolute;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+  padding: 0.4rem;
+  background: #2a4d69;
+  color: white;
+}
+.main-container {
+  height: 99vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+* {
+  /* border: 1px solid red; */
+}
