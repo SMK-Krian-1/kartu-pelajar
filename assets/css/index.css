@@ -29,10 +29,6 @@
   background: #e5c863;
   color: white;
 }
-.btn-class-cancel {
-  border: 1px solid #adcbe3;
-  color: #5e6f7e;
-}
 .btn-class-add {
   background: #adcbe3;
   color: white;
@@ -41,11 +37,11 @@
   background: #df5353;
   color: white;
 }
-.btn-login-cancel {
-  border: 1px solid #df5353;
-  color: black;
+.btn-validasi {
+  background: #e5c863;
+  color: white;
 }
-.login-alert, .class-alert, .print-alert {
+.login-alert, .class-alert, .print-alert, .validate-alert {
   background: #df53533b;
   border: 2px solid #df5353;
   padding: 20px;

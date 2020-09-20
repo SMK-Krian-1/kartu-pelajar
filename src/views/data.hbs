@@ -20,47 +20,51 @@
 
   </header>
   <div class="container main-container">
-    <div class="col-12">
-      <div class="card card-container mb-5">
-        <div class="card-header">
-          <a href="/" class="card-header-back"><i class="fas fa-arrow-left mr-2"></i><span
-              class="card-header-text">KEMBALI</span></a>
-        </div>
-        <div class="card-body">
-          <table class="table table-hover" id="dtable">
-            <thead class="thead-dark">
-              <tr>
-                <th>Nama</th>
-                <th>NIS</th>
-                <th>NISN</th>
-                <th>Absen</th>
-                <th>TTL</th>
-                <th>Alamat</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each result}}
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-container mb-5">
+          <div class="card-header">
+            <a href="/" class="card-header-back"><i class="fas fa-arrow-left mr-2"></i><span
+                class="card-header-text">KEMBALI</span></a>
+          </div>
+          <div class="card-body">
+            <table class="table table-hover" id="dtable">
+              <thead class="thead-dark">
                 <tr>
-                  <td>{{this.nama}}</td>
-                  <td>{{this.nis}}</td>
-                  <td>{{this.nisn}}</td>
-                  <td>{{this.absen}}</td>
-                  <td>{{this.ttl}}</td>
-                  <td>{{this.alamat}}</td>
-                  <td><a href="/get-data-siswa/{{this.nisn}}" target="_blank" class="btn btn-sm btn-go shadow-0">Buat Kartu</a></td>
+                  <th>Nama</th>
+                  <th>NIS</th>
+                  <th>NISN</th>
+                  <th>Absen</th>
+                  <th>TTL</th>
+                  <th>Alamat</th>
+                  <th>Aksi</th>
                 </tr>
-              {{/each}}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {{#each result}}
+                  <tr>
+                    <td>{{this.nama}}</td>
+                    <td>{{this.nis}}</td>
+                    <td>{{this.nisn}}</td>
+                    <td>{{this.absen}}</td>
+                    <td>{{this.ttl}}</td>
+                    <td>{{this.alamat}}</td>
+                    <td><a href="/get-data-siswa/{{this.nisn}}" target="_blank" class="btn btn-sm btn-go shadow-0">Buat
+                        Kartu</a></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <footer class="footer text-center">
-    <div class="footer-text">
-      <h5>standinshd</h5>
+    <div class="footer-text pt-3">
+      <p>
+        < /> with ♥ by <a href="#">standinshd</a></p>
     </div>
   </footer>
 

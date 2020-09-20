@@ -1,5 +1,5 @@
 .btn-go {
-  background: #df5353;
+  background: #e5c863;
   color: white;
 }
 .card-container {
@@ -13,7 +13,7 @@
   top: 0;
   z-index: 5;
   border-bottom: 0;
-  background: #df5353;
+  background: #e5c863;
   padding: 15px;
 }
 .card-header-back {
@@ -24,4 +24,8 @@
 }
 .card-header-text {
   font-weight: 500;
+}
+.btn-validasi-data {
+  background: #e5c863;
+  color: white;
 }

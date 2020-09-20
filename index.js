@@ -6,26 +6,39 @@ const hbs = require("hbs");
 const fs = require("fs");
 const path = require("path");
 const sql = require("mysql");
+const chalk = require("chalk");
 const app = express();
+const { mysqlConf, expressConf } = require("./config.js");
 const db = sql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "data_kartu",
+  host: mysqlConf.host,
+  user: mysqlConf.user,
+  password: mysqlConf.password,
+  database: mysqlConf.database,
 });
 db.connect((err) => {
-  if (err) return console.error(`MySQL connection failed : ${err}`);
-  console.log(`MySQL successfully connected!`);
+  if (err) return console.error(chalk.whiteBright.bgRedBright(`MySQL connection failed : ${err}`));
+  console.log(chalk.black.bgGreen("MySQL successfully connected!"));
 });
 
+// set rendering engine & directory for client
 app.set("views", path.join(__dirname, "src/views"));
 app.set("view engine", "hbs");
+
+// granting access to folders
 app.use("/assets", express.static("assets"));
 app.use("/uploads", express.static("uploads"));
+
+// parsing form data from client-side
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// parsing cookies from client-side
 app.use(cookieParser());
 
+/*
+ * INDEX ROUTE
+ * Rendered when client visited root of the webpage
+ */
 app.get("/", (req, res) => {
   let adminAccess;
   const login = req.cookies.login;
@@ -38,13 +51,64 @@ app.get("/", (req, res) => {
   });
 });
 
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  if (username !== "shd" && password !== "shd") granted = false;
-  else granted = true;
-  res.cookie("login", true).json({ granted });
+/*
+ * Show data form for student
+ * @PARAMS kelas:STRING:xrpl1
+ */
+app.get("/form/:kelas", (req, res) => {
+  let komp_keahlian;
+  const { kelas } = req.params;
+  if (kelas.includes("tpm")) komp_keahlian = "Teknik Pemesinan";
+  if (kelas.includes("titl")) komp_keahlian = "Teknik Instalasi Tenaga Listrik";
+  if (kelas.includes("rpl")) komp_keahlian = "Rekayasa Perangkat Lunak";
+  if (kelas.includes("las")) komp_keahlian = "Teknik Pengelasan";
+  res.render("form", { kelas, komp_keahlian });
 });
 
+/*
+ * VALIDATE/CLASS
+ * Will get class parameter and pass class data to client as table
+ * @PARAMS kelas:STRING:xrpl1
+ */
+app.get("/validate/:kelas", (req, res) => {
+  const { kelas } = req.params;
+  db.query(`SELECT * FROM siswa WHERE kelas='${kelas}'`, (err, result) => {
+    if (err) res.json(err);
+    res.render("validasi", { result, kelas });
+  });
+});
+
+/*
+ * Show student data in table
+ * @PARAMS kelas:STRING:xrpl1
+ */
+app.get("/:kelas", (req, res) => {
+  const { kelas } = req.params;
+  db.query(`SELECT * FROM siswa WHERE kelas='${kelas}'`, (err, result) => {
+    if (err) res.json(err);
+    res.render("data", { result, kelas });
+  });
+});
+
+/*
+ * Print out single user
+ * @PARAMS kelas:STRING:xrpl1
+ * @PARAMS nisn:NUMBER:0123456789
+ */
+// prettier-ignore
+app.get("/:kelas/get/:nisn", (req, res) => {
+  const { kelas, nisn } = req.params;
+  db.query(`SELECT * FROM siswa WHERE kelas='${kelas}' AND nisn='${nisn}'`, (err, result) => {
+    if (err) res.json("Something went wrong!");
+    if (!result.length) return res.status(404).json("Not Found!");
+    res.json(result);
+  });
+});
+
+/*
+ * Print out student ID card
+ * @PARAMS nisn:NUMBER:0123456789
+ */
 app.get("/get-data-siswa/:nisn", upload.none(), (req, res) => {
   const { nisn } = req.params;
   db.query(`SELECT * FROM siswa WHERE nisn=${nisn}`, (err, result) => {
@@ -59,79 +123,30 @@ app.get("/get-data-siswa/:nisn", upload.none(), (req, res) => {
   });
 });
 
-app.post("/generate-kartu", upload.none(), (req, res) => {
-  const { nisn } = req.body;
-  res.json({ nisn });
+/*
+ * LOGIN
+ * Validate username & password then grants specific functionality
+ */
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  if (username !== "shd" || password !== "shd") granted = false;
+  else granted = true;
+  res.cookie("login", true, { maxAge: 300000 }).json({ granted });
 });
 
-app.post("/post-data", upload.single("fileFoto"), (req, res) => {
-  // prettier-ignore
-  const { namaLengkap, NIS, NIS2, NISN, kelas, tempatLahir, tglLahir, blnLahir, thnLahir, alamat } = req.body;
-  // prettier-ignore
-  const programKeahlian = kelas == "Rekayasa Perangkat Lunak" ? "Teknik Informatika dan Komputer" : "Teknologi dan Rekayasa";
-  const data = {
-    nama: namaLengkap.toUpperCase(),
-    nomorInduk: `${NIS}/${NIS2} - ${NISN}`,
-    programKeahlian,
-    kompetensiKeahlian: kelas,
-    ttl: `${tempatLahir}, ${tglLahir} ${blnLahir} ${thnLahir}`,
-    tmpfoto: req.file,
-    alamat,
-  };
-  console.log(data);
-  // prettier-ignore
-  fs.renameSync(`./${data.tmpfoto.path.replace("\\", "/")}`, `./${data.tmpfoto.path.replace("\\", "/")}.jpeg`);
-  const foto = data.tmpfoto.filename + ".jpeg";
-  res.render("kartu", { data, foto });
-});
-
-app.get("/:kelas", (req, res) => {
-  const { kelas } = req.params;
-  db.query(`SELECT * FROM siswa WHERE kelas='${kelas}'`, (err, result) => {
-    if (err) res.json(err);
-    res.render("data", { result, kelas });
-  });
-});
-
-app.get("/form/:kelas", (req, res) => {
-  let komp_keahlian;
-  const { kelas } = req.params;
-  if (kelas.includes("tpm")) komp_keahlian = "Teknik Pemesinan";
-  if (kelas.includes("titl")) komp_keahlian = "Teknik Instalasi Tenaga Listrik";
-  if (kelas.includes("rpl")) komp_keahlian = "Rekayasa Perangkat Lunak";
-  if (kelas.includes("las")) komp_keahlian = "Teknik Pengelasan";
-  res.render("form", { kelas, komp_keahlian });
-});
-
+/*
+ * Add new student data to database
+ * @PARAMS kelas:STRING:xrpl1
+ */
 // prettier-ignore
-app.post("/form/:kelas/add", upload.single("fileFoto"), (req, res) => {
+app.post("/form/:kelas/add", upload.none(), (req, res) => {
   const { kelas } = req.params;
-  const fileFoto = req.file;
   const { namaLengkap, NIS, NIS2, NISN, komp_keahlian, tempatLahir, tglLahir, blnLahir, thnLahir, alamat } = req.body;
   const ttl = `${tempatLahir}, ${tglLahir} ${blnLahir} ${thnLahir}`;
-  const fileBlob = fileFoto.buffer;
-  const fileName = fileFoto.originalname;
-  const foto = `/uploads/${kelas}/${fileName}`
-  if (!fs.existsSync(`./uploads/${kelas}`)) fs.mkdirSync(`./uploads/${kelas}`);
-  fs.writeFileSync(`./uploads/${kelas}/${fileName}`, fileBlob);
-  db.query(`INSERT INTO siswa(kelas, nama, nis, absen, nisn, komp_keahlian, ttl, alamat, foto) VALUES('${kelas}', '${namaLengkap}', '${NIS}', '${NIS2}', '${NISN}', '${komp_keahlian}', '${ttl}', '${alamat}', '${foto}')`, (err, result, field) => {
+  db.query(`INSERT INTO siswa(kelas, nama, nis, absen, nisn, komp_keahlian, ttl, alamat) VALUES('${kelas}', '${namaLengkap}', '${NIS}', '${NIS2}', '${NISN}', '${komp_keahlian}', '${ttl}', '${alamat}')`, (err, result, field) => {
     if (err) res.json(`Error : ${err}`);
     res.json("Success!");
   });
-});
-
-// prettier-ignore
-app.get("/:kelas/get/:nisn", (req, res) => {
-  const { kelas, nisn } = req.params;
-  db.query(`SELECT * FROM siswa WHERE kelas='${kelas}' AND nisn='${nisn}'`, (err, result) => {
-    if (err) res.json("Something went wrong!");
-    if (!result.length) return res.status(404).json("Not Found!");
-    res.json(result);
-  });
-});
-
-app.post("/form/:kelas/upd/:id", (req, res) => {
-  const { kelas } = req.params;
 });
 
 app.post("/form/:kelas/del/:id", (req, res) => {
@@ -139,4 +154,16 @@ app.post("/form/:kelas/del/:id", (req, res) => {
   res.json(kelas);
 });
 
-app.listen("3000", console.log("localhost:3000"));
+app.post("/validate/:nisn", (req, res) => {
+  const { nisn } = req.params;
+});
+
+app.post("/generate-kartu", upload.none(), (req, res) => {
+  const { nisn } = req.body;
+  res.json({ nisn });
+});
+
+app.listen(expressConf.port, expressConf.host, () => {
+  // prettier-ignore
+  console.log(chalk.black.bgGreen(`App is listening on ${expressConf.host}:${expressConf.port}`));
+});

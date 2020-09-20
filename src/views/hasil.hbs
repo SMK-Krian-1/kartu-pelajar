@@ -35,8 +35,9 @@
   </div>
 
   <footer class="footer text-center">
-    <div class="footer-text">
-      <h5>standinshd</h5>
+    <div class="footer-text pt-3">
+      <p>
+        < /> with ♥ by <a href="#">standinshd</a></p>
     </div>
   </footer>
   <!-- Optional JavaScript -->
@@ -56,13 +57,14 @@
       biru.src = "/assets/img/biru.png";
       stroke.src = "/assets/img/stroke.png";
       foto.src = "{{data.foto}}";
+      let nama = "{{data.nama}}".toUpperCase();
       function generate(c, posX = 0, posY = 0, photoWidth = foto.width, photoHeight = foto.height) {
         c.clearRect(0, 0, 757, 475);
         c.drawImage(base_img, 0, 0);
         // c.drawImage(stroke, 515, 67);
         // c.drawImage(biru, 521.5, 73.6);
         c.font = "bold 21pt Calibri";
-        c.fillText(`{{data.nama}}`, 52, 170);
+        c.fillText(nama, 52, 170);
         c.font = "18pt Calibri";
         c.fillText(`{{data.nis}}/{{data.absen}} - {{data.nisn}}`, 52, 200);
         c.font = "15pt Calibri";
