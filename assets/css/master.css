@@ -5,7 +5,7 @@
   position: absolute;
 }
 .footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100vw;
   padding: 0.4rem;
@@ -13,11 +13,16 @@
   color: white;
 }
 .main-container {
-  height: 99vh;
+  min-height: 98vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 * {
   /* border: 1px solid red; */
+}
+@media only screen and (max-width: 768px) {
+  .main-container {
+    min-height: 130vh;
+  }
 }

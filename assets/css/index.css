@@ -62,3 +62,8 @@
     transform: translateY(0%);
   }
 }
+@media only screen and (max-width: 768px) {
+  .card-container-col {
+    margin-top: 2rem;
+  }
+}

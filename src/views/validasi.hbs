@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/assets/css/validasi.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" />
-  <title>Data {{ kelas }}</title>
+  <title>Validasi Data - {{ kelas }}</title>
 </head>
 
 <body>
@@ -42,7 +42,8 @@
                     <td>{{this.nama}}</td>
                     <td>{{this.nisn}}</td>
                     <td>
-                      <a class="btn btn-sm btn-validasi-data" href="#" onclick="checkData('{{this.nisn}}');" id="{{this.nisn}}">
+                      <a class="btn btn-sm btn-validasi-data" href="#" onclick="openDialog('{{this.nisn}}');"
+                        id="{{this.nisn}}">
                         Cek Data
                       </a>
                     </td>
@@ -66,73 +67,98 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form name="form-edit" action="/" method="POST" enctype="multipart/form-data">
-          <div class="modal-body">
-            <div class="container">
-              <div class="row">
-                <div class="col-12">
-                  <div class="input-group mt-2">
-                    <span class="input-group-text input-icon"><i class="fa fa-user"></i></span>
-                    <input type="text" class="form-control" name="namaLengkap" placeholder="Nama Lengkap" autofocus
-                      required />
-                    <div class="form-file">
-                      <input type="file" class="form-file-input" id="fileFoto"
-                        onchange="$('#form-file-content').html($(this).val().slice($(this).val().lastIndexOf('\\') + 1))"
-                        name="fileFoto" required />
-                      <label for="fileFoto" class="form-file-label">
-                        <span class="form-file-text" id="form-file-content">Pilih Foto</span>
-                        <span class="form-file-button form-file-browse-btn">Browse</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="input-group mt-3">
-                    <span class="input-group-text input-icon"><i class="fa fa-id-card"></i></span>
-                    <input type="number" class="form-control" name="NIS" placeholder="NIS" required>
-                    <span class="input-group-text">/</span>
-                    <input type="text" class="form-control" name="NIS2" placeholder="Absen TU" required>
-                    <span class="input-group-text">-</span>
-                    <input type="number" class="form-control" name="NISN" placeholder="NISN" required>
-                  </div>
-                  <div class="input-group mt-3">
-                    <span class="input-group-text input-icon"><i class="fas fa-cogs"></i></span>
-                    <select class="select form-control" name="komp_keahlian" required>
-                      <option value="{{ komp_keahlian }}" selected>{{ komp_keahlian }}</option>
-                    </select>
-                  </div>
-                  <div class="input-group mt-3">
-                    <span class="input-group-text input-icon"><i class="fa fa-calendar-day"></i></span>
-                    <input type="text" class="form-control" name="tempatLahir" placeholder="Tempat Lahir" required>
-                    <input type="number" class="form-control" name="tglLahir" placeholder="Tanggal" required>
-                    <select class="select form-control" name="blnLahir" required>
-                      <option value="Januari">Januari</option>
-                      <option value="Februari">Februari</option>
-                      <option value="Maret">Maret</option>
-                      <option value="April">April</option>
-                      <option value="Mei">Mei</option>
-                      <option value="Juni">Juni</option>
-                      <option value="Juli">Juli</option>
-                      <option value="Agustus">Agustus</option>
-                      <option value="September">September</option>
-                      <option value="Oktober">Oktober</option>
-                      <option value="November">November</option>
-                      <option value="Desember">Desember</option>
-                    </select>
-                    <input type="number" class="form-control" name="thnLahir" placeholder="Tahun" required>
-                  </div>
-                  <div class="input-group mt-3">
-                    <textarea rows="5" class="form-control" name="alamat" placeholder="Alamat" required></textarea>
-                  </div>
-
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="input-group mt-2">
+                  <span class="input-group-text input-icon"><i class="fa fa-user"></i></span>
+                  <input type="text" class="form-control" id="namaLengkap" placeholder="Nama Lengkap" autofocus
+                    required />
+                  {{#if showFoto}}
+                    <a href="#" class="btn btn-primary input-group-text input-icon" data-toggle="modal" data-target="#modal-foto">Pilih Foto</a>
+                  {{/if}}
+                </div>
+                <div class="input-group mt-3">
+                  <span class="input-group-text input-icon"><i class="fa fa-id-card"></i></span>
+                  <input type="number" class="form-control" id="NIS" placeholder="NIS" required>
+                  <span class="input-group-text">/</span>
+                  <input type="text" class="form-control" id="NIS2" placeholder="Absen TU" required>
+                  <span class="input-group-text">-</span>
+                  <input type="number" class="form-control" id="NISN" placeholder="NISN" required disabled>
+                  <span class="NISN-tooltip">Jika NISN salah, mohon hubungi admin.</span>
+                </div>
+                <div class="input-group mt-3">
+                  <span class="input-group-text input-icon"><i class="fas fa-cogs"></i></span>
+                  <select class="select form-control">
+                    <option value="{{ komp_keahlian }}" selected>{{ komp_keahlian }}</option>
+                  </select>
+                </div>
+                <div class="input-group mt-3">
+                  <span class="input-group-text input-icon"><i class="fa fa-calendar-day"></i></span>
+                  <input type="text" class="form-control" id="tempatLahir" placeholder="Tempat Lahir" required>
+                  <input type="number" class="form-control" id="tglLahir" placeholder="Tanggal" required>
+                  <select class="select form-control" id="blnLahir" required>
+                    <option value="Januari">Januari</option>
+                    <option value="Februari">Februari</option>
+                    <option value="Maret">Maret</option>
+                    <option value="April">April</option>
+                    <option value="Mei">Mei</option>
+                    <option value="Juni">Juni</option>
+                    <option value="Juli">Juli</option>
+                    <option value="Agustus">Agustus</option>
+                    <option value="September">September</option>
+                    <option value="Oktober">Oktober</option>
+                    <option value="November">November</option>
+                    <option value="Desember">Desember</option>
+                  </select>
+                  <input type="number" class="form-control" id="thnLahir" placeholder="Tahun" required />
+                </div>
+                <div class="input-group mt-3">
+                  <textarea rows="5" class="form-control" id="alamat" placeholder="Alamat" required></textarea>
                 </div>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <input type="reset" class="btn btn-action btn-reset shadow-0 mr-3" />
-            <input type="submit" class="btn btn-action btn-submit shadow-0" />
-          </div>
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-action btn-cancel shadow-0" data-dismiss="modal">Batal</a>
+          <a class="btn btn-action btn-submit shadow-0" onclick="submitData();">Submit</a>
+        </div>
       </div>
-      </form>
+    </div>
+  </div>
+
+  {{!-- modal-foto --}}
+  <div class="modal fade" id="modal-foto" tabindex="-1">
+    <div class="modal-dialog modal-foto">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="container">
+            <div class="row photo-select-container">
+              {{#each foto}}
+                <div class="col-6 text-center mb-3">
+                  <label>
+                    <input type="radio" name="photo-select-radio" class="photo-select-radio" value="{{this}}" id="{{this}}" />
+                    <img class="photo-select" src="/uploads/{{../kelas}}/{{this}}" />
+                  </label>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-action btn-cancel shadow-0" data-dismiss="modal">Batal</a>
+          <a href="#" class="btn btn-action btn-primary shadow-0" onclick="selectPhoto();" data-dismiss="modal">Pilih</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -153,10 +179,60 @@
     $(document).ready(function () {
       $("#dtable").DataTable();
     });
-    function checkData(nisn) {
+    let selectedPhoto;
+    function selectPhoto() {
+      selectedPhoto = $(".photo-select-radio:checked").val();
+    }
+    function openDialog(nisn) {
+      $(`.photo-select-radio:checked`).prop("checked", false);
+      selectedPhoto = "";
       const modalEl = document.getElementById("modal");
       const modal = new mdb.Modal(modalEl);
+      $.ajax({
+        url: `/{{ kelas }}/get/${nisn}`,
+        method: "POST",
+        success: function(data) {
+          const { nama, nis, absen, nisn, ttl, alamat, foto } = data[0];
+          const tempat = ttl.slice(0, ttl.indexOf(","));
+          const [ tanggal, bulan, tahun ] = ttl.slice(ttl.indexOf(",") + 2).split(" ");
+          if (foto.length) {
+            let photoID = foto.slice(foto.lastIndexOf("/") + 1);
+            $(`[id='${photoID}']`).prop("checked", true);
+          }
+          $("#namaLengkap").val(nama);
+          $("#NIS").val(nis);
+          $("#NIS2").val(absen);
+          $("#NISN").val(nisn);
+          $("#tempatLahir").val(tempat);
+          $("#tglLahir").val(tanggal);
+          $("#blnLahir").val(bulan);
+          $("#thnLahir").val(tahun);
+          $("#alamat").val(alamat);
+        }
+      });
       modal.show();
+    }
+    function submitData() {
+      const modalEl = document.getElementById("modal");
+      const modal = new mdb.Modal(modalEl);
+      const nama = $("#namaLengkap").val();
+      const NIS = $("#NIS").val();
+      const NIS2 = $("#NIS2").val();
+      const NISN = $("#NISN").val();
+      const komp_keahlian = $("#komp_keahlian").val();
+      const ttl = `${$("#tempatLahir").val()}, ${$("#tglLahir").val()} ${$("#blnLahir").val()} ${$("#thnLahir").val()}`
+      const alamat = $("#alamat").val();
+      const foto = selectedPhoto;
+      $.ajax({
+        url: `/validate/${NISN}`,
+        method: "POST",
+        data: {
+          nama, NIS, NIS2, NISN, komp_keahlian, ttl, alamat, foto
+        },
+        success: function(res) {
+          console.log(res)
+        }
+      });
     }
   </script>
 </body>
