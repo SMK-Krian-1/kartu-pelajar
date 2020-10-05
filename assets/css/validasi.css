@@ -1,0 +1,74 @@
+.btn-go {
+  background: #e5c863;
+  color: white;
+}
+.btn-submit {
+  background: #e5c863;
+  color: white;
+}
+.card-container {
+  box-shadow: 5px 5px 45px rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+  max-height: 80vh;
+  overflow-y: scroll;
+}
+.card-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-bottom: 0;
+  background: #e5c863;
+  padding: 15px;
+}
+.card-header-back {
+  color: rgba(255, 255, 255, 1);
+}
+.card-header-back:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+.card-header-text {
+  font-weight: 500;
+}
+.btn-validasi-data {
+  background: #e5c863;
+  color: white;
+}
+.photo-select-container {
+  max-height: 50vh;
+  overflow-y: scroll;
+}
+.photo-select-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.photo-select-radio + img {
+  cursor: pointer;
+}
+.photo-select-radio:checked + img {
+  border: 5px solid #e5c863;
+  border-radius: 50%;
+  filter: brightness(50%);
+}
+.photo-select {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+}
+.NISN-tooltip {
+  display: none;
+  background: #e5c863;
+  border-radius: 10px;
+  color: white;
+  max-width: 200px;
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  z-index: 5;
+  padding: 5px;
+}
+
+#NISN:hover + .NISN-tooltip {
+  display: block;
+}

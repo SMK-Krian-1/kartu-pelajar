@@ -5,8 +5,13 @@
 .card-container {
   box-shadow: 5px 5px 45px rgba(0, 0, 0, 0.5);
   border-radius: 15px;
+  max-height: 80vh;
+  overflow-y: scroll;
 }
 .card-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   border-bottom: 0;
   background: #df5353;
   padding: 15px;
@@ -15,7 +20,7 @@
   color: rgba(255, 255, 255, 1);
 }
 .card-header-back:hover {
-  color: rgba(255, 255, 255, .8);
+  color: rgba(255, 255, 255, 0.8);
 }
 .card-header-text {
   font-weight: 500;

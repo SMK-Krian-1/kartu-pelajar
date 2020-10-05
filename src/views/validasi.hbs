@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- MDB CSS -->
+  <link rel="stylesheet" href="/assets/css/mdb.min.css" />
+  <link rel="stylesheet" href="/assets/css/master.css" />
+  <link rel="stylesheet" href="/assets/css/validasi.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" />
+  <title>Validasi Data - {{ kelas }}</title>
+</head>
+
+<body>
+  <header class="header">
+
+  </header>
+  <div class="container main-container">
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-container mb-5">
+          <div class="card-header">
+            <a href="/" class="card-header-back"><i class="fas fa-arrow-left mr-2"></i><span
+                class="card-header-text">KEMBALI</span></a>
+          </div>
+          <div class="card-body">
+            <table class="table table-hover" id="dtable">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Nama</th>
+                  <th>NISN</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each result}}
+                  <tr>
+                    <td>{{this.nama}}</td>
+                    <td>{{this.nisn}}</td>
+                    <td>
+                      <a class="btn btn-sm btn-validasi-data" href="#" onclick="openDialog('{{this.nisn}}');"
+                        id="{{this.nisn}}">
+                        Cek Data
+                      </a>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{!-- modal --}}
+  <div class="modal fade" id="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="nama-siswa"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="input-group mt-2">
+                  <span class="input-group-text input-icon"><i class="fa fa-user"></i></span>
+                  <input type="text" class="form-control" id="namaLengkap" placeholder="Nama Lengkap" autofocus
+                    required />
+                  {{#if showFoto}}
+                    <a href="#" class="btn btn-primary input-group-text input-icon" data-toggle="modal" data-target="#modal-foto">Pilih Foto</a>
+                  {{/if}}
+                </div>
+                <div class="input-group mt-3">
+                  <span class="input-group-text input-icon"><i class="fa fa-id-card"></i></span>
+                  <input type="number" class="form-control" id="NIS" placeholder="NIS" required>
+                  <span class="input-group-text">/</span>
+                  <input type="text" class="form-control" id="NIS2" placeholder="Absen TU" required>
+                  <span class="input-group-text">-</span>
+                  <input type="number" class="form-control" id="NISN" placeholder="NISN" required disabled>
+                  <span class="NISN-tooltip">Jika NISN salah, mohon hubungi admin.</span>
+                </div>
+                <div class="input-group mt-3">
+                  <span class="input-group-text input-icon"><i class="fas fa-cogs"></i></span>
+                  <select class="select form-control">
+                    <option value="{{ komp_keahlian }}" selected>{{ komp_keahlian }}</option>
+                  </select>
+                </div>
+                <div class="input-group mt-3">
+                  <span class="input-group-text input-icon"><i class="fa fa-calendar-day"></i></span>
+                  <input type="text" class="form-control" id="tempatLahir" placeholder="Tempat Lahir" required>
+                  <input type="number" class="form-control" id="tglLahir" placeholder="Tanggal" required>
+                  <select class="select form-control" id="blnLahir" required>
+                    <option value="Januari">Januari</option>
+                    <option value="Februari">Februari</option>
+                    <option value="Maret">Maret</option>
+                    <option value="April">April</option>
+                    <option value="Mei">Mei</option>
+                    <option value="Juni">Juni</option>
+                    <option value="Juli">Juli</option>
+                    <option value="Agustus">Agustus</option>
+                    <option value="September">September</option>
+                    <option value="Oktober">Oktober</option>
+                    <option value="November">November</option>
+                    <option value="Desember">Desember</option>
+                  </select>
+                  <input type="number" class="form-control" id="thnLahir" placeholder="Tahun" required />
+                </div>
+                <div class="input-group mt-3">
+                  <textarea rows="5" class="form-control" id="alamat" placeholder="Alamat" required></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-action btn-cancel shadow-0" data-dismiss="modal">Batal</a>
+          <a class="btn btn-action btn-submit shadow-0" onclick="submitData();">Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{!-- modal-foto --}}
+  <div class="modal fade" id="modal-foto" tabindex="-1">
+    <div class="modal-dialog modal-foto">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="container">
+            <div class="row photo-select-container">
+              {{#each foto}}
+                <div class="col-6 text-center mb-3">
+                  <label>
+                    <input type="radio" name="photo-select-radio" class="photo-select-radio" value="{{this}}" id="{{this}}" />
+                    <img class="photo-select" src="/uploads/{{../kelas}}/{{this}}" />
+                  </label>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-action btn-cancel shadow-0" data-dismiss="modal">Batal</a>
+          <a href="#" class="btn btn-action btn-primary shadow-0" onclick="selectPhoto();" data-dismiss="modal">Pilih</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer text-center">
+    <div class="footer-text pt-3">
+      <p>
+        < /> with ♥ by <a href="#">standinshd</a></p>
+    </div>
+  </footer>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then MDB JS -->
+  <script src="/assets/js/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="/assets/js/mdb.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#dtable").DataTable();
+    });
+    let selectedPhoto;
+    function selectPhoto() {
+      selectedPhoto = $(".photo-select-radio:checked").val();
+    }
+    function openDialog(nisn) {
+      $(`.photo-select-radio:checked`).prop("checked", false);
+      selectedPhoto = "";
+      const modalEl = document.getElementById("modal");
+      const modal = new mdb.Modal(modalEl);
+      $.ajax({
+        url: `/{{ kelas }}/get/${nisn}`,
+        method: "POST",
+        success: function(data) {
+          const { nama, nis, absen, nisn, ttl, alamat, foto } = data[0];
+          const tempat = ttl.slice(0, ttl.indexOf(","));
+          const [ tanggal, bulan, tahun ] = ttl.slice(ttl.indexOf(",") + 2).split(" ");
+          if (foto.length) {
+            let photoID = foto.slice(foto.lastIndexOf("/") + 1);
+            $(`[id='${photoID}']`).prop("checked", true);
+          }
+          $("#namaLengkap").val(nama);
+          $("#NIS").val(nis);
+          $("#NIS2").val(absen);
+          $("#NISN").val(nisn);
+          $("#tempatLahir").val(tempat);
+          $("#tglLahir").val(tanggal);
+          $("#blnLahir").val(bulan);
+          $("#thnLahir").val(tahun);
+          $("#alamat").val(alamat);
+        }
+      });
+      modal.show();
+    }
+    function submitData() {
+      const modalEl = document.getElementById("modal");
+      const modal = new mdb.Modal(modalEl);
+      const nama = $("#namaLengkap").val();
+      const NIS = $("#NIS").val();
+      const NIS2 = $("#NIS2").val();
+      const NISN = $("#NISN").val();
+      const komp_keahlian = $("#komp_keahlian").val();
+      const ttl = `${$("#tempatLahir").val()}, ${$("#tglLahir").val()} ${$("#blnLahir").val()} ${$("#thnLahir").val()}`
+      const alamat = $("#alamat").val();
+      const foto = selectedPhoto;
+      $.ajax({
+        url: `/validate/${NISN}`,
+        method: "POST",
+        data: {
+          nama, NIS, NIS2, NISN, komp_keahlian, ttl, alamat, foto
+        },
+        success: function(res) {
+          console.log(res)
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
