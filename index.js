@@ -164,9 +164,9 @@ app.post("/login", (req, res) => {
 // prettier-ignore
 app.post("/form/:kelas/add", upload.none(), (req, res) => {
   const { kelas } = req.params;
-  const { namaLengkap, NIS, NIS2, NISN, komp_keahlian, tempatLahir, tglLahir, blnLahir, thnLahir, alamat } = req.body;
+  const { namaLengkap, NIS, NISN, komp_keahlian, tempatLahir, tglLahir, blnLahir, thnLahir, alamat } = req.body;
   const ttl = `${tempatLahir}, ${tglLahir} ${blnLahir} ${thnLahir}`;
-  db.query(`INSERT INTO siswa(kelas, nama, nis, absen, nisn, komp_keahlian, ttl, alamat) VALUES('${kelas}', '${namaLengkap}', '${NIS}', '${NIS2}', '${NISN}', '${komp_keahlian}', '${ttl}', '${alamat}')`, (err, result, field) => {
+  db.query(`INSERT INTO siswa(kelas, nama, nis, nisn, komp_keahlian, ttl, alamat) VALUES('${kelas}', '${namaLengkap}', '${NIS}', '${NISN}', '${komp_keahlian}', '${ttl}', '${alamat}')`, (err, result, field) => {
     if (err) res.json(`Error : ${err}`);
     res.redirect(`/form/${kelas}?show=true&msg=Berhasil menambah data!`);
   });

@@ -20,6 +20,9 @@
 
   </header>
   <div class="container main-container">
+    <div class="popup-msg">
+      <span id="message"></span>
+    </div>
     <div class="row">
       <div class="col-12">
         <div class="card card-container mb-5">
@@ -76,7 +79,8 @@
                   <input type="text" class="form-control" id="namaLengkap" placeholder="Nama Lengkap" autofocus
                     required />
                   {{#if showFoto}}
-                    <a href="#" class="btn btn-primary input-group-text input-icon" data-toggle="modal" data-target="#modal-foto">Pilih Foto</a>
+                    <a href="#" class="btn btn-primary input-group-text input-icon" data-toggle="modal"
+                      data-target="#modal-foto">Pilih Foto</a>
                   {{/if}}
                 </div>
                 <div class="input-group mt-3">
@@ -146,7 +150,8 @@
               {{#each foto}}
                 <div class="col-6 text-center mb-3">
                   <label>
-                    <input type="radio" name="photo-select-radio" class="photo-select-radio" value="{{this}}" id="{{this}}" />
+                    <input type="radio" name="photo-select-radio" class="photo-select-radio" value="{{this}}"
+                      id="{{this}}" />
                     <img class="photo-select" src="/uploads/{{../kelas}}/{{this}}" />
                   </label>
                 </div>
@@ -156,7 +161,8 @@
         </div>
         <div class="modal-footer">
           <a href="#" class="btn btn-action btn-cancel shadow-0" data-dismiss="modal">Batal</a>
-          <a href="#" class="btn btn-action btn-primary shadow-0" onclick="selectPhoto();" data-dismiss="modal">Pilih</a>
+          <a href="#" class="btn btn-action btn-primary shadow-0" onclick="selectPhoto();"
+            data-dismiss="modal">Pilih</a>
         </div>
       </div>
     </div>
@@ -191,10 +197,10 @@
       $.ajax({
         url: `/{{ kelas }}/get/${nisn}`,
         method: "POST",
-        success: function(data) {
+        success: function (data) {
           const { nama, nis, absen, nisn, ttl, alamat, foto } = data[0];
           const tempat = ttl.slice(0, ttl.indexOf(","));
-          const [ tanggal, bulan, tahun ] = ttl.slice(ttl.indexOf(",") + 2).split(" ");
+          const [tanggal, bulan, tahun] = ttl.slice(ttl.indexOf(",") + 2).split(" ");
           if (foto.length) {
             let photoID = foto.slice(foto.lastIndexOf("/") + 1);
             $(`[id='${photoID}']`).prop("checked", true);
@@ -226,11 +232,14 @@
       $.ajax({
         url: `/validate/${NISN}`,
         method: "POST",
-        data: {
-          nama, NIS, NIS2, NISN, komp_keahlian, ttl, alamat, foto
-        },
-        success: function(res) {
-          console.log(res)
+        data: { nama, NIS, NIS2, NISN, komp_keahlian, ttl, alamat, foto },
+        success: function (res) {
+          $(".popup-msg").fadeIn(300);
+          $("#message").html("Berhasil memberbarui data!");
+          setTimeout(() => {
+            $(".popup-msg").fadeOut(500);
+            location.reload();
+          }, 3000);
         }
       });
     }

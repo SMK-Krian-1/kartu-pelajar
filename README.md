@@ -1,6 +1,6 @@
 # Kartu Pelajar
 
-#### Sistem kartu pelajar SMK Krian 1 Sidoarjo
+Sistem kartu pelajar SMK Krian 1 Sidoarjo
 
 ## Build
 
@@ -26,6 +26,7 @@
 | cookie-parser    | https://www.npmjs.com/package/cookie-parser/ |
 | express          | https://www.npmjs.com/package/express/       |
 | handlebars (hbs) | https://www.npmjs.com/package/hbs/           |
+| http-proxy       | https://www.npmjs.com/package/http-proxy/    |
 | multer           | https://www.npmjs.com/package/multer/        |
 | mysql            | https://www.npmjs.com/package/mysql/         |
 
