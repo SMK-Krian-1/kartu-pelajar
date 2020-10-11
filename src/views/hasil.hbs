@@ -29,7 +29,6 @@
           <label>Ukuran :</label>
           <input type="range" class="custom-range" id="size" min="1" step="0.2" max="10" value="5" />
           <canvas id="viewport" width="757" height="475"></canvas>
-          <div id="demo"></div>
         </div>
       </div>
     </div>
@@ -47,18 +46,26 @@
   <script src="/assets/js/jquery-barcode.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
   <script src="/assets/js/mdb.min.js"></script>
+  <script src="/assets/js/JsBarcode.code128.min.js"></script>
   <script type="text/javascript">
     $(window).ready(function () {
       let base_img = new Image();
       let biru = new Image();
       let stroke = new Image();
       let foto = new Image();
+      let barcode = new Image();
       let drag = false;
-      base_img.src = "/assets/img/depan-transparan.png";
+      base_img.src = "/assets/img/new.png";
       biru.src = "/assets/img/biru.png";
       stroke.src = "/assets/img/stroke.png";
       foto.src = "/uploads/{{kelas}}/{{data.foto}}";
+      barcode.src = generateBarcode();
       let nama = "{{data.nama}}".toUpperCase();
+      function generateBarcode(nisn) {
+        const canvas = document.createElement("canvas");
+        JsBarcode(canvas, "{{data.nisn}}", { format: "CODE128", height: 30, displayValue: false });
+        return canvas.toDataURL("image/png");
+      }
       function generate(c, posX = 0, posY = 0, photoWidth = foto.width, photoHeight = foto.height) {
         c.clearRect(0, 0, 757, 475);
         c.drawImage(base_img, 0, 0);
@@ -73,6 +80,7 @@
         c.fillText(`{{data.komp_keahlian}}`, 245, 258);
         c.fillText(`{{data.ttl}}`, 245, 282);
         c.fillText(`{{data.alamat}}`, 245, 306);
+        c.drawImage(barcode, 40, 350);
         c.save();
         c.fillStyle = "#46A5DC";
         c.beginPath();
@@ -86,6 +94,7 @@
       }
       const canvasBG = document.getElementById("viewport");
       let ctx = canvasBG.getContext("2d");
+      
       base_img.onload = function () {
         generate(ctx);
       }

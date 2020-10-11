@@ -8,9 +8,14 @@
   position: fixed;
   bottom: 0;
   width: 100vw;
-  padding: 0.4rem;
   background: #2a4d69;
   color: white;
+}
+.footer-text p a {
+  color: #5faeee;
+}
+.footer-text p a:hover {
+  color: #5295cc;
 }
 .main-container {
   min-height: 98vh;
