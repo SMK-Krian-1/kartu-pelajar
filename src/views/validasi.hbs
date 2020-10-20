@@ -201,7 +201,7 @@
           const { nama, nis, absen, nisn, ttl, alamat, foto } = data[0];
           const tempat = ttl.slice(0, ttl.indexOf(","));
           const [tanggal, bulan, tahun] = ttl.slice(ttl.indexOf(",") + 2).split(" ");
-          if (foto.length) {
+          if (foto != null) {
             let photoID = foto.slice(foto.lastIndexOf("/") + 1);
             $(`[id='${photoID}']`).prop("checked", true);
           }
