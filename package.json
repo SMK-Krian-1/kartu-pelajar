@@ -4,7 +4,6 @@
   "description": "Aplikasi layouting kartu pelajar SKARISA",
   "scripts": {
     "dev": "nodemon",
-    "proxy": "node proxy.js",
     "start": "node index.js"
   },
   "main": "index.js",
