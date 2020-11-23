@@ -14,7 +14,9 @@ const db = new sqlite3.Database("./data_kartu.db");
 
 db.serialize(() => {
   if (!exists) {
-    db.run("CREATE TABLE siswa(nama TEXT, nis TEXT, absen TEXT, nisn TEXT, kelas TEXT, komp_keahlian TEXT, ttl TEXT, alamat TEXT, foto TEXT)");
+    db.run(
+      "CREATE TABLE siswa(nama TEXT, nis TEXT, absen TEXT, nisn TEXT, kelas TEXT, komp_keahlian TEXT, ttl TEXT, alamat TEXT, foto TEXT)"
+    );
     console.log("Database created!", "Connected to Database!");
   } else {
     console.log("Connected to Database!");
@@ -35,6 +37,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parsing cookies from client-side
 app.use(cookieParser());
+// app.use(function (req, res, next) {
+//   const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+//   const token = req.cookies.token;
+//   if (req.originalUrl == "/login") return res.render("login")
+//   if (typeof token == "undefined" || token !== currentToken) return res.redirect("/login");
+// });
 
 app.get("/db", (req, res) => {
   db.all("SELECT * FROM siswa", (e, r) => {
@@ -49,7 +57,11 @@ app.get("/db", (req, res) => {
 app.get("/", (req, res) => {
   let adminAccess;
   const login = req.cookies.login;
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
   if (typeof login == "undefined") adminAccess = false;
+  if (typeof token == "undefined" || token !== currentToken)
+    return res.redirect("/login");
   else adminAccess = true;
   const availableClass = fs.readFileSync("./class.json");
   res.render("index", {
@@ -63,6 +75,10 @@ app.get("/", (req, res) => {
  * @PARAMS kelas:STRING:xrpl1
  */
 app.get("/form/:kelas", (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (typeof token == "undefined" || token !== currentToken)
+    return res.redirect("/login");
   let komp_keahlian;
   const { kelas } = req.params;
   if (kelas.includes("tpm")) komp_keahlian = "Teknik Pemesinan";
@@ -78,6 +94,10 @@ app.get("/form/:kelas", (req, res) => {
  * @PARAMS kelas:STRING:xrpl1
  */
 app.get("/validate/:kelas", (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (typeof token == "undefined" || token !== currentToken)
+    return res.redirect("/login");
   let komp_keahlian;
   const { kelas } = req.params;
   if (kelas.includes("tpm")) komp_keahlian = "Teknik Pemesinan";
@@ -86,10 +106,30 @@ app.get("/validate/:kelas", (req, res) => {
   if (kelas.includes("las")) komp_keahlian = "Teknik Pengelasan";
   db.all(`SELECT * FROM siswa WHERE kelas='${kelas}'`, (err, result) => {
     if (err) res.json(err);
-    if (!fs.existsSync(`./uploads/${kelas}/`)) return res.render("validasi", { result, kelas, showFoto: false });
+    if (!fs.existsSync(`./uploads/${kelas}/`))
+      return res.render("validasi", { result, kelas, showFoto: false });
     const foto = fs.readdirSync(`./uploads/${kelas}/`);
-    res.render("validasi", { result, komp_keahlian, kelas, showFoto: true, foto });
+    res.render("validasi", {
+      result,
+      komp_keahlian,
+      kelas,
+      showFoto: true,
+      foto,
+    });
   });
+});
+
+app.get("/login", (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (token === currentToken) return res.redirect("/");
+  res.render("login");
+});
+
+app.post("/loginAdmin", upload.none(), (req, res, next) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  if (req.body.token !== currentToken) return res.json({ granted: false });
+  res.cookie("token", currentToken, { maxAge: 300000 }).json({ granted: true });
 });
 
 /*
@@ -97,6 +137,10 @@ app.get("/validate/:kelas", (req, res) => {
  * @PARAMS kelas:STRING:xrpl1
  */
 app.get("/:kelas", (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (typeof token == "undefined" || token !== currentToken)
+    return res.redirect("/login");
   const { kelas } = req.params;
   db.all(`SELECT * FROM siswa WHERE kelas='${kelas}'`, (err, result) => {
     if (err) res.json(err);
@@ -111,6 +155,10 @@ app.get("/:kelas", (req, res) => {
  */
 // prettier-ignore
 app.get("/:kelas/get/:nisn", (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (typeof token == "undefined" || token !== currentToken)
+    return res.redirect("/login");
   const { kelas, nisn } = req.params;
   db.all(`SELECT * FROM siswa WHERE kelas='${kelas}' AND nisn='${nisn}'`, (err, result) => {
     if (err) res.json("Something went wrong!");
@@ -126,6 +174,10 @@ app.get("/:kelas/get/:nisn", (req, res) => {
  */
 // prettier-ignore
 app.post("/:kelas/get/:nisn", (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (typeof token == "undefined" || token !== currentToken)
+    return res.redirect("/login");
   const { kelas, nisn } = req.params;
   db.all(`SELECT * FROM siswa WHERE kelas='${kelas}' AND nisn='${nisn}'`, (err, result) => {
     if (err) res.json("Something went wrong!");
@@ -139,6 +191,10 @@ app.post("/:kelas/get/:nisn", (req, res) => {
  * @PARAMS nisn:NUMBER:0123456789
  */
 app.get("/get-data-siswa/:kelas/:nisn", upload.none(), (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (typeof token == "undefined" || token !== currentToken)
+    return res.redirect("/login");
   const { kelas, nisn } = req.params;
   db.all(`SELECT * FROM siswa WHERE nisn='${nisn}'`, (err, result) => {
     if (err) res.json(err);
@@ -170,6 +226,10 @@ app.post("/login", (req, res) => {
  */
 // prettier-ignore
 app.post("/form/:kelas/add", upload.none(), (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (typeof token == "undefined" || token !== currentToken)
+    return res.redirect("/login");
   const { kelas } = req.params;
   const { namaLengkap, NIS, NISN, komp_keahlian, tempatLahir, tglLahir, blnLahir, thnLahir, alamat } = req.body;
   const ttl = `${tempatLahir}, ${tglLahir} ${blnLahir} ${thnLahir}`;
@@ -187,9 +247,12 @@ app.post("/form/:kelas/del/:id", (req, res) => {
 app.post("/validate/:nisn", (req, res) => {
   const { nisn } = req.params;
   const { nama, NIS, NIS2, NISN, ttl, alamat, foto } = req.body;
-  db.all(`UPDATE siswa SET nama='${nama}', nis='${NIS}', absen='${NIS2}', nisn='${NISN}', ttl='${ttl}', alamat='${alamat}', foto='${foto}' WHERE nisn='${NISN}'`, (err, result, field) => {
-    res.send("Success!");
-  });
+  db.all(
+    `UPDATE siswa SET nama='${nama}', nis='${NIS}', absen='${NIS2}', nisn='${NISN}', ttl='${ttl}', alamat='${alamat}', foto='${foto}' WHERE nisn='${NISN}'`,
+    (err, result, field) => {
+      res.send("Success!");
+    }
+  );
 });
 
 app.post("/generate-kartu", upload.none(), (req, res) => {
