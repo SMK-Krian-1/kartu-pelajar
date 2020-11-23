@@ -35,6 +35,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parsing cookies from client-side
 app.use(cookieParser());
+app.use(function (req, res, next) {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (req.originalUrl == "/login") return next();
+  if (typeof token == "undefined" || token !== currentToken) return res.redirect("/login");
+});
 
 app.get("/db", (req, res) => {
   db.all("SELECT * FROM siswa", (e, r) => {
@@ -90,6 +96,13 @@ app.get("/validate/:kelas", (req, res) => {
     const foto = fs.readdirSync(`./uploads/${kelas}/`);
     res.render("validasi", { result, komp_keahlian, kelas, showFoto: true, foto });
   });
+});
+
+app.get("/login", (req, res) => {
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  const token = req.cookies.token;
+  if (token === currentToken) return res.redirect("/");
+  res.render("login");
 });
 
 /*
@@ -162,6 +175,14 @@ app.post("/login", (req, res) => {
   if (username !== "shd" || password !== "shd") granted = false;
   else granted = true;
   res.cookie("login", true, { maxAge: 300000 }).json({ granted });
+});
+
+app.post("/loginToken", (req, res) => {
+  console.log("LOGIN")
+  res.send("TEST TEST TEST")
+  const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+  if (req.body.token !== currentToken) return res.json({ granted: false });
+  res.cookie("token", currentToken, { maxAge: 300000 }).json({ granted: true });
 });
 
 /*
