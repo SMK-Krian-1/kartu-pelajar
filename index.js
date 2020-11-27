@@ -113,6 +113,10 @@ app.get("/validate/:kelas", (req, res) => {
   });
 });
 
+/*
+ * TOKEN FORM
+ * Will be pushed if client has no cookies
+ */
 app.get("/login", (req, res) => {
   const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
   const token = req.cookies.token;
@@ -120,14 +124,12 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+/*
+ * SUBMITING TOKEN
+ * Will be pushed when client logging in
+ */
 app.post("/loginAdmin", upload.none(), (req, res, next) => {
   const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
-console.log(req.body.token.length == currentToken.length);
-console.log(req.body.token === currentToken);
-console.log("token", req.body.token.length);
-console.log("currentToken", currentToken.length);
-console.log(typeof currentToken);
-console.log(typeof req.body.token);
   if (req.body.token !== currentToken) return res.json({ granted: false });
   res.cookie("token", currentToken, { maxAge: 300000 }).json({ granted: true });
 });
@@ -210,7 +212,7 @@ app.get("/get-data-siswa/:kelas/:nisn", upload.none(), (req, res) => {
 });
 
 /*
- * LOGIN
+ * CETAK LOGIN
  * Validate username & password then grants specific functionality
  */
 app.post("/login", (req, res) => {
@@ -239,6 +241,7 @@ app.post("/form/:kelas/add", upload.none(), (req, res) => {
   });
 });
 
+// TODOS
 app.post("/form/:kelas/del/:id", (req, res) => {
   const kelas = req.params;
   res.json(kelas);
