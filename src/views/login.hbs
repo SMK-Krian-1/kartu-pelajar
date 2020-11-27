@@ -59,6 +59,7 @@
         method: "POST",
         data: { token },
         success: function(res) {
+return console.log(res);
           if (!res.granted) location.reload();
           else location.href = "/";
         }

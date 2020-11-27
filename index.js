@@ -37,12 +37,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parsing cookies from client-side
 app.use(cookieParser());
-// app.use(function (req, res, next) {
-//   const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
-//   const token = req.cookies.token;
-//   if (req.originalUrl == "/login") return res.render("login")
-//   if (typeof token == "undefined" || token !== currentToken) return res.redirect("/login");
-// });
 
 app.get("/db", (req, res) => {
   db.all("SELECT * FROM siswa", (e, r) => {
@@ -128,6 +122,12 @@ app.get("/login", (req, res) => {
 
 app.post("/loginAdmin", upload.none(), (req, res, next) => {
   const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
+console.log(req.body.token.length == currentToken.length);
+console.log(req.body.token === currentToken);
+console.log("token", req.body.token.length);
+console.log("currentToken", currentToken.length);
+console.log(typeof currentToken);
+console.log(typeof req.body.token);
   if (req.body.token !== currentToken) return res.json({ granted: false });
   res.cookie("token", currentToken, { maxAge: 300000 }).json({ granted: true });
 });
