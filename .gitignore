@@ -1,6 +1,0 @@
-node_modules/
-uploads/*
-package-lock.json
-*.db
-TOKEN.txt
-class.json
