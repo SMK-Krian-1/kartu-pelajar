@@ -1,0 +1,51 @@
+.card-container {
+  box-shadow: 5px 5px 45px rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+}
+.card-header {
+  border-bottom: 0;
+  background: #adcbe3;
+  padding: 15px;
+}
+.card-header-back {
+  color: rgba(79, 79, 79, 1);
+}
+.card-header-back:hover {
+  color: rgb(48, 48, 48);
+}
+.card-header-text {
+  font-weight: 500;
+}
+.input-icon {
+  width: 45px;
+}
+.card-footer {
+  border-top: 0;
+  text-align: right;
+}
+.btn-action {
+  width: 100px;
+  height: 40px;
+}
+.btn-reset {
+  background: rgba(0, 0, 0, 0);
+  border: 2px solid #adcbe3;
+}
+.btn-submit {
+  background: #adcbe3;
+}
+.form-file-browse-btn {
+  background: #adcbe3;
+}
+.popup-msg {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+  background: #00B74A;
+  border-radius: 10px;
+  color: white;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
