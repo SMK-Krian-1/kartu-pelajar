@@ -90,8 +90,7 @@ app.get("/form/:kelas", (req, res) => {
 app.get("/validate/:kelas", (req, res) => {
   const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
   const token = req.cookies.token;
-  if (typeof token == "undefined" || token !== currentToken)
-    return res.redirect("/login");
+  if (typeof token == "undefined" || token !== currentToken) return res.redirect("/login");
   let komp_keahlian;
   const { kelas } = req.params;
   if (kelas.includes("tpm")) komp_keahlian = "Teknik Pemesinan";
@@ -101,7 +100,7 @@ app.get("/validate/:kelas", (req, res) => {
   db.all(`SELECT * FROM siswa WHERE kelas='${kelas}'`, (err, result) => {
     if (err) res.json(err);
     if (!fs.existsSync(`./uploads/${kelas}/`))
-      return res.render("validasi", { result, kelas, showFoto: false });
+      return res.render("validasi", { result, kelas, komp_keahlian, showFoto: false });
     const foto = fs.readdirSync(`./uploads/${kelas}/`);
     res.render("validasi", {
       result,
