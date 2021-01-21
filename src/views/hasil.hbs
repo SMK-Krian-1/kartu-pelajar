@@ -22,7 +22,7 @@
     <div class="col-12">
       <div class="card card-container mb-5">
         <div class="card-header">
-          <a href="/" class="card-header-back"><i class="fas fa-arrow-left mr-2"></i><span
+          <a href="#" id="back-btn" class="card-header-back"><i class="fas fa-arrow-left mr-2"></i><span
               class="card-header-text">KEMBALI</span></a>
         </div>
         <div class="card-body">
@@ -49,16 +49,20 @@
   <script src="/assets/js/JsBarcode.code128.min.js"></script>
   <script type="text/javascript">
     $(window).ready(function () {
+      const pathname = location.pathname;
+      const prevClass = pathname.slice(pathname.indexOf("/", 1) + 1, pathname.lastIndexOf("/")); // todo make back to previous class
+      const backBtnElement = document.getElementById("back-btn").href = prevClass;
       let base_img = new Image();
       let biru = new Image();
       let stroke = new Image();
       let foto = new Image();
       let barcode = new Image();
       let drag = false;
-      base_img.src = "/assets/img/new.png";
-      biru.src = "/assets/img/biru.png";
+      base_img.src = "/assets/img/new/depan.png";
+      biru.src = "/assets/img/new/container.png";
       stroke.src = "/assets/img/stroke.png";
-      foto.src = "/uploads/{{kelas}}/{{data.foto}}";
+      // foto.src = "/uploads/{{kelas}}/{{data.foto}}";
+      foto.src = "/uploads/all/IMG_{{data.foto}}.JPG";
       barcode.src = generateBarcode();
       let nama = "{{data.nama}}".toUpperCase();
       function generateBarcode(nisn) {
@@ -71,20 +75,19 @@
         c.drawImage(base_img, 0, 0);
         // c.drawImage(stroke, 515, 67);
         // c.drawImage(biru, 521.5, 73.6);
-        c.font = "bold 21pt Calibri";
-        c.fillText(nama, 52, 170);
-        c.font = "18pt Calibri";
-        c.fillText(`{{data.nis}}/{{data.absen}} - {{data.nisn}}`, 52, 200);
-        c.font = "15pt Calibri";
-        c.fillText(`{{data.programKeahlian}}`, 245, 234);
-        c.fillText(`{{data.komp_keahlian}}`, 245, 258);
-        c.fillText(`{{data.ttl}}`, 245, 282);
-        c.fillText(`{{data.alamat}}`, 245, 306);
-        c.drawImage(barcode, 40, 350);
+        c.font = "bold 23pt Calibri";
+        c.fillText(nama, 269, 210);
+        c.font = "14pt Calibri";
+        c.fillText(`{{data.nis}}/{{data.nisn}}`, 450, 235);
+        c.fillText(`{{data.programKeahlian}}`, 450, 260);
+        c.fillText(`{{data.komp_keahlian}}`, 450, 283);
+        c.fillText(`{{data.ttl}}`, 450, 307);
+        c.fillText(`{{data.alamat}}`, 450, 330);
+        c.drawImage(barcode, 350, 400);
         c.save();
         c.fillStyle = "#46A5DC";
         c.beginPath();
-        c.ellipse(621, 168.5, 100, 100, 0, 1, 100);
+        c.ellipse(150, 270, 100, 100, 0, 1, 100);
         c.strokeStyle = "white";
         c.lineWidth = 10;
         c.stroke();

@@ -15,7 +15,7 @@ const db = new sqlite3.Database("./data_kartu.db");
 db.serialize(() => {
   if (!exists) {
     db.run(
-      "CREATE TABLE siswa(nama TEXT, nis TEXT, absen TEXT, nisn TEXT, kelas TEXT, komp_keahlian TEXT, ttl TEXT, alamat TEXT, foto TEXT)"
+      "CREATE TABLE siswa(nama TEXT, nis TEXT, nisn TEXT, kelas TEXT, komp_keahlian TEXT, ttl TEXT, alamat TEXT, foto TEXT)"
     );
     console.log("Database created!", "Connected to Database!");
   } else {
@@ -127,10 +127,10 @@ app.get("/login", (req, res) => {
  * SUBMITING TOKEN
  * Will be pushed when client logging in
  */
-app.post("/loginAdmin", upload.none(), (req, res, next) => {
+app.post("/loginAdmin", upload.none(), (req, res) => {
   const currentToken = fs.readFileSync("./TOKEN.txt", "utf-8");
   if (req.body.token !== currentToken) return res.json({ granted: false });
-  res.cookie("token", currentToken, { maxAge: 300000 }).json({ granted: true });
+  res.cookie("token", currentToken, { maxAge: 1000 * 60 * 60 * 24 }).json({ granted: true });
 });
 
 /*
@@ -200,12 +200,12 @@ app.get("/get-data-siswa/:kelas/:nisn", upload.none(), (req, res) => {
   db.all(`SELECT * FROM siswa WHERE nisn='${nisn}'`, (err, result) => {
     if (err) res.json(err);
     // prettier-ignore
-    const { nama, nis, absen, nisn, komp_keahlian, ttl, alamat, foto } = result[0];
+    const { nama, nis, nisn, komp_keahlian, ttl, alamat, foto } = result[0];
     if (!foto.length) return res.send("FOTO BELUM DI ISI!");
     // prettier-ignore
     const programKeahlian = komp_keahlian == "Rekayasa Perangkat Lunak" ? "Teknik Informatika dan Komputer" : "Teknologi dan Rekayasa";
     // prettier-ignore
-    const data = { nama, nis, absen, nisn, komp_keahlian, programKeahlian, ttl, alamat, foto };
+    const data = { nama, nis, nisn, komp_keahlian, programKeahlian, ttl, alamat, foto };
     res.render("hasil", { data, kelas });
   });
 });
@@ -218,7 +218,7 @@ app.post("/login", (req, res) => {
   const { username, password } = req.body;
   if (username !== "shd" || password !== "shd") granted = false;
   else granted = true;
-  res.cookie("login", true, { maxAge: 300000 }).json({ granted });
+  res.cookie("login", true, { maxAge: 1000 * 60 * 60 * 24 }).json({ granted });
 });
 
 /*
@@ -232,9 +232,9 @@ app.post("/form/:kelas/add", upload.none(), (req, res) => {
   if (typeof token == "undefined" || token !== currentToken)
     return res.redirect("/login");
   const { kelas } = req.params;
-  const { namaLengkap, NIS, NISN, komp_keahlian, tempatLahir, tglLahir, blnLahir, thnLahir, alamat } = req.body;
+  const { namaLengkap, NIS, NISN, komp_keahlian, tempatLahir, tglLahir, blnLahir, thnLahir, alamat, foto } = req.body;
   const ttl = `${tempatLahir}, ${tglLahir} ${blnLahir} ${thnLahir}`;
-  db.all(`INSERT INTO siswa(kelas, nama, nis, nisn, komp_keahlian, ttl, alamat) VALUES('${kelas}', '${namaLengkap}', '${NIS}', '${NISN}', '${komp_keahlian}', '${ttl}', '${alamat}')`, (err, result, field) => {
+  db.all(`INSERT INTO siswa(kelas, nama, nis, nisn, komp_keahlian, ttl, alamat, foto) VALUES('${kelas}', '${namaLengkap}', '${NIS}', '${NISN}', '${komp_keahlian}', '${ttl}', '${alamat}', '${foto}')`, (err, result, field) => {
     if (err) res.json(`Error : ${err}`);
     res.redirect(`/form/${kelas}?show=true&msg=Berhasil menambah data!`);
   });
@@ -248,9 +248,9 @@ app.post("/form/:kelas/del/:id", (req, res) => {
 
 app.post("/validate/:nisn", (req, res) => {
   const { nisn } = req.params;
-  const { nama, NIS, NIS2, NISN, ttl, alamat, foto } = req.body;
+  const { nama, NIS, NISN, ttl, alamat, foto } = req.body;
   db.all(
-    `UPDATE siswa SET nama='${nama}', nis='${NIS}', absen='${NIS2}', nisn='${NISN}', ttl='${ttl}', alamat='${alamat}', foto='${foto}' WHERE nisn='${NISN}'`,
+    `UPDATE siswa SET nama='${nama}', nis='${NIS}', nisn='${NISN}', ttl='${ttl}', alamat='${alamat}', foto='${foto}' WHERE nisn='${NISN}'`,
     (err, result, field) => {
       res.send("Success!");
     }

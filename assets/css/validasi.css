@@ -60,18 +60,19 @@
 .NISN-tooltip {
   display: none;
   background: #e5c863;
-  border-radius: 10px;
   color: white;
   max-width: 200px;
   position: absolute;
   bottom: 100%;
   right: 0;
   z-index: 5;
-  padding: 5px;
 }
 
 #NISN:hover + .NISN-tooltip {
   display: block;
+  text-align: center;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 .popup-msg {

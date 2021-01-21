@@ -34,6 +34,8 @@
               <span class="input-group-text input-icon"><i class="fa fa-user"></i></span>
               <input type="text" class="form-control" name="namaLengkap" placeholder="Nama Lengkap" autofocus
                 required />
+              <input type="text" class="form-control" name="foto" placeholder="Foto"
+                required />
             </div>
             <div class="input-group mt-3">
               <span class="input-group-text input-icon"><i class="fa fa-id-card"></i></span>
@@ -68,12 +70,12 @@
               <input type="number" class="form-control" name="thnLahir" placeholder="Tahun" required>
             </div>
             <div class="input-group mt-3">
-              <textarea rows="5" class="form-control" name="alamat" placeholder="Alamat" required></textarea>
+              <textarea rows="5" class="form-control" id="alamat" name="alamat" placeholder="Alamat" required></textarea>
             </div>
           </div>
           <div class="card-footer pb-3">
             <input type="reset" class="btn btn-action btn-reset shadow-0 mr-3" />
-            <input type="submit" class="btn btn-action btn-submit shadow-0" />
+            <input type="submit" id="submitBtn" class="btn btn-action btn-submit shadow-0" />
           </div>
         </form>
       </div>
@@ -93,6 +95,13 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
   <script src="/assets/js/mdb.min.js"></script>
   <script>
+    const inputKeyup = document.getElementById("alamat");
+    inputKeyup.addEventListener("keyup", function(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        document.getElementById("submitBtn").click();
+      }
+    });
     const url = new URLSearchParams(location.search);
     if (url.get("show") != null) {
       $("#message").html(decodeURIComponent(url.get("msg")));
