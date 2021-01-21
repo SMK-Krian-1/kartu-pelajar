@@ -22,7 +22,7 @@
     <div class="col-12">
       <div class="card card-container mb-5">
         <div class="card-header">
-          <a href="#" id="back-btn" class="card-header-back"><i class="fas fa-arrow-left mr-2"></i><span
+          <a href="#" onclick="goBack();" class="card-header-back"><i class="fas fa-arrow-left mr-2"></i><span
               class="card-header-text">KEMBALI</span></a>
         </div>
         <div class="card-body">
@@ -37,7 +37,8 @@
   <footer class="footer text-center">
     <div class="footer-text pt-3">
       <p>
-        < /> with ♥ by <a href="#">standinshd</a></p>
+        < /> with ♥ by <a href="#">standinshd</a>
+      </p>
     </div>
   </footer>
   <!-- Optional JavaScript -->
@@ -48,10 +49,12 @@
   <script src="/assets/js/mdb.min.js"></script>
   <script src="/assets/js/JsBarcode.code128.min.js"></script>
   <script type="text/javascript">
+    const pathname = location.pathname;
+    const prevClass = pathname.slice(pathname.indexOf("/", 1) + 1, pathname.lastIndexOf("/")); // todo make back to previous class
+    function goBack() {
+      location.pathname = prevClass;
+    }
     $(window).ready(function () {
-      const pathname = location.pathname;
-      const prevClass = pathname.slice(pathname.indexOf("/", 1) + 1, pathname.lastIndexOf("/")); // todo make back to previous class
-      const backBtnElement = document.getElementById("back-btn").href = prevClass;
       let base_img = new Image();
       let biru = new Image();
       let stroke = new Image();
@@ -65,12 +68,13 @@
       foto.src = "/uploads/all/IMG_{{data.foto}}.JPG";
       barcode.src = generateBarcode();
       let nama = "{{data.nama}}".toUpperCase();
+
       function generateBarcode(nisn) {
         const canvas = document.createElement("canvas");
         JsBarcode(canvas, "{{data.nisn}}", { format: "CODE128", height: 30, displayValue: false });
         return canvas.toDataURL("image/png");
       }
-      function generate(c, posX = 0, posY = 0, photoWidth = foto.width, photoHeight = foto.height) {
+      function generate(c, posX = 0, posY = 0, photoWidth = foto.width / 2.3, photoHeight = foto.height / 2.3) {
         c.clearRect(0, 0, 757, 475);
         c.drawImage(base_img, 0, 0);
         // c.drawImage(stroke, 515, 67);
@@ -97,7 +101,7 @@
       }
       const canvasBG = document.getElementById("viewport");
       let ctx = canvasBG.getContext("2d");
-      
+
       base_img.onload = function () {
         generate(ctx);
       }
